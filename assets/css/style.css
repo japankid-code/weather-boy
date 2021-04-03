@@ -3,12 +3,12 @@
     --fontLight: #e0e0e0;
     --fontDark: #1a1a1a;
     --bgDark: #2a2a2a;
+    --bgLight: #c5c5c5;
 }
 
 #header {
     display: flex;
     height: calc(3vh + 3rem);
-    font-size: 45px;
     background-color: #1c5aa1;
     color: var(--fontLight);
     overflow: hidden;
@@ -19,12 +19,13 @@
     width: 100%;
 }
 
-#content-main {
+#main-content {
     min-height: calc(97vh - 6rem);
     background-color: var(--bgDark);
+    height: 100%;
 }
 
-/* special stylings for the container inside the main!! */
+/* special stylings for the main!! */
 
 /* end special styling */
  

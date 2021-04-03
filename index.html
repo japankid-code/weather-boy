@@ -5,24 +5,84 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Document</title>
-    <!-- link to Bulma CSS framework -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css" />
+    <!-- link to Tailwind CSS framework -->
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Exo+2">
     <link rel="stylesheet" href="./assets/css/style.css" />
 </head>
 <body>
     <header id="header">
-        <h1>Weather Dashboard</h1>
+        <h1 class="text-5xl">Weather Dashboard</h1>
     </header>
 
-    <main id="content-main">
-        <div class="container">
-            
+    <main id="main-content">
+        <div class="container mx-auto p-5 grid grid-cols-12 gap-4 h-full">
+            <section id="search-form" class="col-span-4 bg-gray-200 text-center my-2 rounded divide-y-4 divide-black divide-opacity-25">
+                <form action="" class="">
+                    <h2 class="text-lg">search here</h2>
+                    <input type="text" class="m-1 mx-auto text-center" placeholder="city name">
+                    <button id="search-button" type="submit" class="m-2 px-2 py-1 bg-gray-600 border-gray-900 border-2 rounded-lg">search</button>
+                </form>
+                <div id="" class="flex flex-col">
+                    <h2 class="text-lg">previous searches:</h2>
+                    <div id="search-history" class="flex flex-wrap-reverse">
+                        <button id="old-search1" class="m-2 px-2 py-1 bg-gray-400 border-gray-900 border-2 rounded-lg w-full">Milwaukee</button>
+                        <!-- append old search elements here!! -->
+                    </div>
+                </div>
+            </section>
+            <section id="results" class="col-span-8 bg-gray-200 my-2 rounded gap-2 h-auto">
+                <div id="results-container" class="grid grid-rows-6 h-auto">
+                    <div id="current-day-weather" class="row-span-4 m-1 p-1 border-gray-500 border-2 rounded-lg">
+                        <h2 id="city-name" class="text-3xl">City <span id="current-date">05/30/2021</span> <i id="weather-icon">icon</i></h2>
+                        <ul class='flex flex-col justify-around h-48 w-56'>
+                            <li id="temp-now" class="flex justify-between">
+                                <span class="">Temp:</span>
+                                <!-- add temp here -->
+                            </li>
+                            <li id="wind-now" class="flex justify-between">
+                                <span class="">Wind:</span>
+                                <!-- add wind here -->
+                            </li>
+                            <li id="humidity-now" class="flex justify-between">
+                                <span class="">Humidity:</span>
+                                <!-- add humidity here -->
+                            </li>
+                            <li id="UV-index" class="flex justify-between">
+                                <span class="">UV index:</span>
+                                <!-- add UV index here -->
+                            </li>
+                        </ul>
+                    </div>
+                    <div id='weather-forecast' class="row-span-2 m-1 p-1 border-gray-500 border-2 text-gray-200 rounded-lg">
+                        <div class="grid grid-cols-5 h-auto">
+                            <article class="col-span-1 text-center bg-gray-800 rounded"> 
+                                <h2 class="text-m"><span id="forecast-day-1">future</span></h2>
+                                <i id="weather-icon-1">icon</i>
+                                <ul class='flex flex-col justify-around'>
+                                    <li id="temp-day-1" class="px-1 flex justify-between">
+                                        <span class="">Temp:</span>
+                                        <!-- add temp here -->
+                                    </li>
+                                    <li id="wind-now-1" class="px-1 flex justify-between">
+                                        <span class="">Wind:</span>
+                                        <!-- add wind here -->
+                                    </li>
+                                    <li id="humidity-now-1" class="px-1 flex justify-between">
+                                        <span class="">Humidity:</span>
+                                        <!-- add humidity here -->
+                                    </li>
+                                </ul>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
 
     <footer id="footer">
-        <h3>C japankid 2021</h3>
+        <h3>&copy japankid 2021</h3>
     </footer>
 
     <script src="./assets/js/script.js"></script>
