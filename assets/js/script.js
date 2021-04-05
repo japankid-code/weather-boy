@@ -30,6 +30,7 @@ function myFunction(city) {
     )
     .then((response) => response.json())
     .then((todayDataObj) => {
+        // values get overwritten for city, date and icon
         // get the city name
         let cityName = todayDataObj.name;
         cityEl.innerHTML = cityName;
@@ -42,36 +43,41 @@ function myFunction(city) {
         let todayIconCode = todayDataObj.weather[0].icon;
         let iconUrl = `http://openweathermap.org/img/w/${todayIconCode}.png`;
         iconEl.innerHTML = `<img src='${iconUrl}' class="inline"/>`;
+
+
+        // values get appended to the divs for wind, temp and hums.
         // put the temp inside a new span and append it to today's weather
-        let todayTemp = todayDataObj.main.temp;
-        let tempValue = document.createElement("span");
-        tempValue.innerHTML = `${todayTemp} &deg;F`;
-        if (tempEl.children.length <= 1) {
-            tempEl.appendChild(tempValue);
-        } else if (tempEl.children.length >= 2) {
-            tempEl.removeChild(tempEl.children[1]);
-            tempEl.appendChild(tempValue);
-        }
+            let todayTemp = todayDataObj.main.temp;
+            let tempValue = document.createElement("span");
+            tempValue.innerHTML = `${todayTemp} &deg;F`;
+            if (tempEl.children.length <= 1) {
+                tempEl.appendChild(tempValue);
+            } else if (tempEl.children.length >= 2) {
+                // checks if there is a value displayed and removes it if there is
+                tempEl.removeChild(tempEl.children[1]);
+                tempEl.appendChild(tempValue);
+            }
         // put the wind inside a new span and append it to today's weather
-        let todayWind = todayDataObj.wind.speed;
-        let windValue = document.createElement("span");
-        windValue.innerHTML = `${todayWind} MPH`;
-        if (windEl.children.length <= 1) {
-            windEl.appendChild(windValue);
-        } else if (windEl.children.length >= 2) {
-            windEl.removeChild(windEl.children[1]);
-            windEl.appendChild(windValue);
-        }
+            let todayWind = todayDataObj.wind.speed;
+            let windValue = document.createElement("span");
+            windValue.innerHTML = `${todayWind} MPH`;
+            if (windEl.children.length <= 1) {
+                windEl.appendChild(windValue);
+            } else if (windEl.children.length >= 2) {
+                windEl.removeChild(windEl.children[1]);
+                windEl.appendChild(windValue);
+            }
         // put the humidity inside a new span and append it to today's weather
-        let todayHumidity = todayDataObj.main.humidity;
-        let humidityValue = document.createElement("span");
-        humidityValue.innerHTML = `${todayHumidity} %`;
-        if (humidityEl.children.length <= 1) {
-            humidityEl.appendChild(humidityValue);
-        } else if (humidityEl.children.length >= 2) {
-            humidityEl.removeChild(humidityEl.children[1]);
-            humidityEl.appendChild(humidityValue);
-        }
+            let todayHumidity = todayDataObj.main.humidity;
+            let humidityValue = document.createElement("span");
+            humidityValue.innerHTML = `${todayHumidity} %`;
+            if (humidityEl.children.length <= 1) {
+                humidityEl.appendChild(humidityValue);
+            } else if (humidityEl.children.length >= 2) {
+                humidityEl.removeChild(humidityEl.children[1]);
+                humidityEl.appendChild(humidityValue);
+            }
+
 
         // grab the latitude and longitude from today's data,
         let lat = todayDataObj.coord.lat;
