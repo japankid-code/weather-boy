@@ -46,21 +46,30 @@ function myFunction(city) {
         let todayTemp = todayDataObj.main.temp;
         let tempValue = document.createElement("span");
         tempValue.innerHTML = `${todayTemp} &deg;F`;
-        if (tempEl.childElementCount <= 1) {
+        if (tempEl.children.length <= 1) {
+            tempEl.appendChild(tempValue);
+        } else if (tempEl.children.length >= 2) {
+            tempEl.removeChild(tempEl.children[1]);
             tempEl.appendChild(tempValue);
         }
         // put the wind inside a new span and append it to today's weather
         let todayWind = todayDataObj.wind.speed;
         let windValue = document.createElement("span");
         windValue.innerHTML = `${todayWind} MPH`;
-        if (windEl.childElementCount <= 1) {
+        if (windEl.children.length <= 1) {
+            windEl.appendChild(windValue);
+        } else if (windEl.children.length >= 2) {
+            windEl.removeChild(windEl.children[1]);
             windEl.appendChild(windValue);
         }
         // put the humidity inside a new span and append it to today's weather
         let todayHumidity = todayDataObj.main.humidity;
         let humidityValue = document.createElement("span");
         humidityValue.innerHTML = `${todayHumidity} %`;
-        if (humidityEl.childElementCount <= 1) {
+        if (humidityEl.children.length <= 1) {
+            humidityEl.appendChild(humidityValue);
+        } else if (humidityEl.children.length >= 2) {
+            humidityEl.removeChild(humidityEl.children[1]);
             humidityEl.appendChild(humidityValue);
         }
 
@@ -69,12 +78,36 @@ function myFunction(city) {
         let lon = todayDataObj.coord.lon;
         // pass to a consecutive fetch grabbing the UV index for the day
         let UVindexUrl = `https://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${openweatherAPIkey}`;        
-        // response.value
+        fetch(UVindexUrl)
+            .then((response) => response.json())
+            .then((UVDataObj) => {
+                console.log(UVDataObj)
+                let UVI = UVDataObj.value;
+                let indexValue = document.createElement("span");
+                indexValue.setAttribute('id', 'index-value');
+                indexValue.classList = 'bg-gray-400 rounded p-1';
+                if (UVI <= 5) { // 0 to 5 is yellow
+                    indexValue.classList.add('bg-yellow-400');
+                } else if (UVI <= 7) { // 6-7 is orange
+                    indexValue.classList.add('bg-orange-400');
+                } else if (UVI <= 10.5) { // 8-10 red
+                    indexValue.classList.add('bg-red-400');
+                } else if (UVI > 10.5){ // 11+ is extreme purple
+                    indexValue.classList.add('bg-purple-400');
+                }
+                
+                indexValue.innerHTML = `${UVI}`;
+                if (indexEl.childElementCount <= 1) {
+                    indexEl.appendChild(indexValue);
+                } else if (indexEl.children.length >= 2) {
+                    indexEl.removeChild(indexEl.children[1]);
+                    indexEl.appendChild(indexValue);
+                }
+            })
 
         let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${openweatherAPIkey}&units=imperial`;
         // pass to a fetch to grab the forecast
     })
 }
 
-
-myFunction('milwaukee');
+myFunction();
