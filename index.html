@@ -18,15 +18,12 @@
     <main id="main-content">
         <div class="container mx-auto p-5 grid grid-cols-12 gap-4 h-full">
             <section id="search-form" class="col-span-4 bg-gray-200 text-center my-2 rounded divide-y-4 divide-black divide-opacity-25">
-                <form action="" class="">
-                    <h2 class="text-lg">search here</h2>
-                    <input type="text" class="m-1 mx-auto text-center" placeholder="city name">
-                    <button id="search-button" type="submit" class="m-2 px-2 py-1 bg-gray-600 border-gray-900 border-2 rounded-lg">search</button>
-                </form>
+                <input id="search-input"type="text" class="m-1 mx-auto text-center rounded" placeholder="city name" value="milwaukee">
+                <button id="search-button" onclick="myFunction()" class="m-2 px-2 py-1 bg-gray-600 border-gray-900 border-2 rounded-lg">search</button>
                 <div id="" class="flex flex-col">
                     <h2 class="text-lg">previous searches:</h2>
                     <div id="search-history" class="flex flex-wrap-reverse">
-                        <button id="old-search1" class="m-2 px-2 py-1 bg-gray-400 border-gray-900 border-2 rounded-lg w-full">Milwaukee</button>
+                        <button id="old-search" class="m-2 px-2 py-1 bg-gray-400 border-gray-900 border-2 rounded-lg w-full">Milwaukee</button>
                         <!-- append old search elements here!! -->
                     </div>
                 </div>
@@ -34,7 +31,9 @@
             <section id="results" class="col-span-8 bg-gray-200 my-2 rounded gap-2 h-auto">
                 <div id="results-container" class="grid grid-rows-6 h-auto">
                     <div id="current-day-weather" class="row-span-4 m-1 p-1 border-gray-500 border-2 rounded-lg">
-                        <h2 id="city-name" class="text-3xl">City <span id="current-date">05/30/2021</span> <i id="weather-icon">icon</i></h2>
+                        <h2 id="city-name" class="inline text-2xl">&nbsp;</h2>
+                        <span id="current-date" class="inline text-xl">&nbsp;</span>
+                        <div id="weather-icon" class="inline"></div>
                         <ul class='flex flex-col justify-around h-48 w-56'>
                             <li id="temp-now" class="flex justify-between">
                                 <span class="">Temp:</span>
@@ -54,8 +53,8 @@
                             </li>
                         </ul>
                     </div>
-                    <div id='weather-forecast' class="row-span-2 m-1 p-1 border-gray-500 border-2 text-gray-200 rounded-lg">
-                        <div class="grid grid-cols-5 h-auto">
+                    <div class="row-span-2 m-1 p-1 border-gray-500 border-2 text-gray-200 rounded-lg">
+                        <div id='forecast-container' class="grid grid-cols-5 h-auto">
                             <article id="forecast-article" class="col-span-1 text-center bg-gray-800 rounded"> 
                                 <span id="forecast-date">future</span><br/>
                                 <i id="forecast-icon">icon</i>
