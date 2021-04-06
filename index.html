@@ -7,7 +7,7 @@
     <title>Document</title>
     <!-- link to Tailwind CSS framework -->
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Exo+2">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Robot+Mono">
     <link rel="stylesheet" href="./assets/css/style.css" />
 </head>
 <body>
@@ -29,10 +29,10 @@
                 </div>
             </section>
             <section id="results" class="col-span-8 bg-gray-200 my-2 rounded gap-2 h-auto">
-                <div id="results-container" class="grid grid-rows-6 h-auto">
-                    <div id="current-day-weather" class="row-span-4 m-1 p-1 border-gray-500 border-2 rounded-lg">
+                <div id="results-container" class="grid grid-rows-12 h-auto">
+                    <div id="current-day-weather" class="row-span-8 m-1 p-1 border-gray-500 border-2 rounded-lg">
                         <h2 id="city-name" class="inline text-2xl">&nbsp;</h2>
-                        <span id="current-date" class="inline text-xl">&nbsp;</span>
+                        <span id="current-date" class="inline text-2xl">&nbsp;</span>
                         <div id="weather-icon" class="inline"></div>
                         <ul class='flex flex-col justify-around h-48 w-56'>
                             <li id="temp-now" class="flex justify-between">
@@ -53,26 +53,9 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="row-span-2 m-1 p-1 border-gray-500 border-2 text-gray-200 rounded-lg">
+                    <div class="row-span-4 m-1 p-1 border-gray-500 border-2 text-gray-200 rounded-lg">
                         <div id='forecast-container' class="grid grid-cols-5 h-auto">
-                            <article id="forecast-article" class="col-span-1 text-center bg-gray-800 rounded"> 
-                                <span id="forecast-date">future</span><br/>
-                                <i id="forecast-icon">icon</i>
-                                <ul id="forecast-list" class='flex flex-col justify-around'>
-                                    <li id="forecast-temp" class="px-1 flex justify-between">
-                                        <span class="">Temp:</span>
-                                        <!-- add temp here -->
-                                    </li>
-                                    <li id="forecast-wind" class="px-1 flex justify-between">
-                                        <span class="">Wind:</span>
-                                        <!-- add wind here -->
-                                    </li>
-                                    <li id="forecast-humidity" class="px-1 flex justify-between">
-                                        <span class="">Humidity:</span>
-                                        <!-- add humidity here -->
-                                    </li>
-                                </ul>
-                            </article>
+                            <!-- add forecast days here -->
                         </div>
                     </div>
                 </div>
