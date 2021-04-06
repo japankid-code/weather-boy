@@ -14,8 +14,11 @@ const windEl = document.getElementById("wind-now");
 const humidityEl = document.getElementById("humidity-now");
 const indexEl = document.getElementById("UV-index");
 
-searchHistList.innerHTML = '';
+const searchButton = document.getElementById("search-button");
+
 forecastList.innerHTML = '';
+
+let searchHistory = [];
 
 const dateStringer = (date) => {
     return ("0" + (date.getUTCMonth()+1)).slice(-2) + "/" + 
@@ -23,8 +26,39 @@ const dateStringer = (date) => {
     ("" + date.getUTCFullYear()).slice(-2);
 }
 
+const searchRender = () => {
+    searchHistList.innerHTML = '';
+    searchHistory.forEach((search, index) => {
+        let searchItem = document.createElement("button")
+        searchItem.classList = "m-2 px-2 py-1 bg-gray-400 border-gray-900 border-2 rounded-lg w-full"
+        searchItem.setAttribute("id", `past-search${index}`)
+        searchItem.setAttribute("onclick", "myFunction()")
+        searchItem.textContent = searchHistory[index];
+        searchHistList.append(searchItem);
+    })
+}
+
+const searchLoad = () => {
+    if (localStorage.getItem("searches") === null) {
+        localStorage.setItem("searches", JSON.stringify(searchHistory));
+    }
+    searchHistory =  JSON.parse(localStorage.getItem("searches"));
+}
+
+const searchSave = (search) => {
+    // update the input value from the DOM
+    searchHistory.push(search);
+    localStorage.setItem("searches", JSON.stringify(searchHistory))
+    searchRender();
+}
+
 function myFunction(city) {
     city = document.getElementById('search-input').value;
+    // make sure they type somethign in
+    if (city === null || city === undefined || city === '') {
+        return;
+    }
+    
     fetch(// first openweather fetch for today's data.
     `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${openweatherAPIkey}&units=imperial`
     )
@@ -115,10 +149,11 @@ function myFunction(city) {
         fetch(forecastUrl)
             .then(response => response.json())
             .then(forecastData => {
+                forecastList.innerHTML = '';
                 for (let i = 2; i <7; i++) {
                     // create the article element holding 1 day's forecast
                     let forecastArticle = document.createElement("article");
-                    forecastArticle.classList = 'm-1 p-1 col-span-1 lg:col-span-5 flex flex-col lg:flex-col justify-center bg-purple-600 rounded ';
+                    forecastArticle.classList = 'm-1 p-1 col-span-1 flex flex-col lg:flex-col justify-center bg-purple-600 rounded ';
                     forecastArticle.setAttribute('src', `forecast-article-${i}`);
                     // grab value for the date and run it thru the stringer
                     let fDataTime = forecastData.daily[`${i}`].dt;
@@ -129,8 +164,9 @@ function myFunction(city) {
                     dateChild.innerHTML = `${fString}`;
                     forecastArticle.appendChild(dateChild);
                     // grab the icon code and append it using the APIs icon URL
-                    let fIcon = forecastData.daily[`${i}`].weather[0].icon
+                    let fIcon = forecastData.daily[`${i}`].weather[0].icon;
                     let iconUrl = `http://openweathermap.org/img/w/${fIcon}.png`;
+
                     let iconChild = document.createElement("img");
                     iconChild.classList = '';
                     iconChild.src = iconUrl;
@@ -140,13 +176,13 @@ function myFunction(city) {
                     let fWind = forecastData.daily[`${i}`].wind_speed.toString().slice(0, 2);
                     let fHums = forecastData.daily[`${i}`].humidity.toString();
                     iconChild.insertAdjacentHTML('afterend', 
-                        `<div class='flex justify-between text-xs lg:w-32 '><p>h: </p><p>${fHums}%</p></div>`
+                        `<div class='flex justify-between text-xs'><p>h: </p><p>${fHums}%</p></div>`
                     );
                     iconChild.insertAdjacentHTML('afterend', 
-                        `<div class='flex justify-between text-xs lg:w-32 '><p>w: </p><p>${fWind} MPH</p></div>`
+                        `<div class='flex justify-between text-xs'><p>w: </p><p>${fWind} MPH</p></div>`
                     );
                     iconChild.insertAdjacentHTML('afterend', 
-                        `<div class='flex justify-between text-xs lg:w-32 '><p>t: </p><p>${fTemp}&deg;F</p></div>`
+                        `<div class='flex justify-between text-xs'><p>t: </p><p>${fTemp}&deg;F</p></div>`
                     );
                     // add it all to the forecast-container
                     if (forecastList.children.length < 5) {
@@ -156,6 +192,8 @@ function myFunction(city) {
                         forecastList.appendChild(forecastArticle);
                     }
                 }
+                // lastly, save the search term
+                searchSave(city)
             })
             
         
@@ -163,4 +201,5 @@ function myFunction(city) {
         
 }
 
-myFunction();
+searchLoad();
+searchRender();
