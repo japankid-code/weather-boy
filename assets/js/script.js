@@ -118,13 +118,14 @@ function myFunction(city) {
                 for (let i = 2; i <7; i++) {
                     // create the article element holding 1 day's forecast
                     let forecastArticle = document.createElement("article");
-                    forecastArticle.classList = 'col-span-1 lg:col-span-5 text-center bg-gray-800 rounded m-1 p-1';
+                    forecastArticle.classList = 'm-1 p-1 col-span-1 lg:col-span-5 flex flex-col lg:flex-col justify-center bg-purple-600 rounded ';
                     forecastArticle.setAttribute('src', `forecast-article-${i}`);
                     // grab value for the date and run it thru the stringer
                     let fDataTime = forecastData.daily[`${i}`].dt;
                     let now = new Date(fDataTime * 1000);
                     let fString = dateStringer(now);
                     let dateChild = document.createElement(`span`);
+                    dateChild.classList = 'block';
                     dateChild.innerHTML = `${fString}`;
                     forecastArticle.appendChild(dateChild);
                     // grab the icon code and append it using the APIs icon URL
@@ -135,22 +136,22 @@ function myFunction(city) {
                     iconChild.src = iconUrl;
                     forecastArticle.appendChild(iconChild);
                     // add the temp, wind, humidity in using innerHTML to add  elements
-                    let fTemp = forecastData.daily[`${i}`].temp.day;
-                    let fWind = forecastData.daily[`${i}`].wind_speed;
-                    let fHums = forecastData.daily[`${i}`].humidity;
+                    let fTemp = forecastData.daily[`${i}`].temp.day.toString().slice(0, 2);
+                    let fWind = forecastData.daily[`${i}`].wind_speed.toString().slice(0, 2);
+                    let fHums = forecastData.daily[`${i}`].humidity.toString();
                     iconChild.insertAdjacentHTML('afterend', 
-                        `<div class='flex justify-between text-xs'><p>hums:</p><p>${fHums}%</p></div>`
+                        `<div class='flex justify-between text-xs lg:w-32 '><p>h: </p><p>${fHums}%</p></div>`
                     );
                     iconChild.insertAdjacentHTML('afterend', 
-                        `<div class='flex justify-between text-xs'><p>wind:</p><p>${fWind}MPH</p></div>`
+                        `<div class='flex justify-between text-xs lg:w-32 '><p>w: </p><p>${fWind} MPH</p></div>`
                     );
                     iconChild.insertAdjacentHTML('afterend', 
-                        `<div class='flex justify-between text-xs'><p>temp:</p><p>${fTemp}&deg;F</p></div>`
+                        `<div class='flex justify-between text-xs lg:w-32 '><p>t: </p><p>${fTemp}&deg;F</p></div>`
                     );
                     // add it all to the forecast-container
-                    if (forecastList.children.length <= 5) {
+                    if (forecastList.children.length < 5) {
                         forecastList.appendChild(forecastArticle);
-                    } else if (forecastList.children.length >= 6) {
+                    } else if (forecastList.children.length > 5) {
                         forecastList.innerHTML = '';
                         forecastList.appendChild(forecastArticle);
                     }
