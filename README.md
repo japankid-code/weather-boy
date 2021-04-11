@@ -8,7 +8,7 @@ In order to travel, I would like to see the weather outlook for different cities
 
 ## links
 
-in case you were wondering, site [deployed here](https://japankid-code.github.io/weather-boy), github [repo here](https://github.com/japankid-code/weather-boy).
+in case you were wondering, site [deployed here](https://japankid-code.github.io/weather-kid), github [repo here](https://github.com/japankid-code/weather-kid).
 
 ### overview
 
