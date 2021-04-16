@@ -18,7 +18,9 @@ const searchButton = document.getElementById("search-button");
 
 forecastList.innerHTML = '';
 
-let searchHistory = [];
+let searchHistory = JSON.parse(localStorage.getItem('searches')) || [];
+
+let citiesArray = JSON.parse(localStorage.getItem('searches')) || [];
 
 const dateStringer = (date) => {
     return ("0" + (date.getUTCMonth()+1)).slice(-2) + "/" + 
@@ -26,9 +28,9 @@ const dateStringer = (date) => {
     ("" + date.getUTCFullYear()).slice(-2);
 }
 
-const searchRender = () => {
+const renderBtns = (array) => {
     searchHistList.innerHTML = '';
-    searchHistory.forEach((search, index) => {
+    array.forEach((search, index) => {
         let searchItem = document.createElement("button")
         searchItem.classList = "m-2 px-2 py-1 bg-gray-400 border-gray-900 border-2 rounded-lg w-full"
         searchItem.setAttribute("id", `past-search${index}`)
@@ -39,9 +41,6 @@ const searchRender = () => {
 }
 
 const searchLoad = () => {
-    if (localStorage.getItem("searches") === null) {
-        localStorage.setItem("searches", JSON.stringify(searchHistory));
-    }
     searchHistory =  JSON.parse(localStorage.getItem("searches"));
 }
 
@@ -49,10 +48,11 @@ const searchSave = (search) => {
     // update the input value from the DOM
     searchHistory.push(search);
     localStorage.setItem("searches", JSON.stringify(searchHistory))
-    searchRender();
+    renderBtns();
 }
 
 function myFunction(city) {
+    let searchObject = {};
     city = document.getElementById('search-input').value;
     // make sure they type somethign in
     if (city === null || city === undefined || city === '') {
@@ -68,16 +68,17 @@ function myFunction(city) {
         // get the city name
         let cityName = todayDataObj.name;
         cityEl.innerHTML = `${cityName} | `;
+        searchObject.name = cityName;
         // use the date to pull out year, month and day
         let dataTime = todayDataObj.dt;
         let now = new Date(dataTime * 1000);
         let dateString = dateStringer(now);
         dateEl.innerHTML = `${dateString} | `;
+        searchObject.date = dateString;
         // get the icon code to pass in to the icon img src
         let todayIconCode = todayDataObj.weather[0].icon;
         let iconUrl = `http://openweathermap.org/img/w/${todayIconCode}.png`;
         iconEl.innerHTML = `<img src='${iconUrl}' class="inline"/>`;
-
 
         // values get appended to the divs for wind, temp and hums.
         // put the temp inside a new span and append it to today's weather
@@ -116,44 +117,20 @@ function myFunction(city) {
         // grab the latitude and longitude from today's data,
         let lat = todayDataObj.coord.lat;
         let lon = todayDataObj.coord.lon;
-        // pass to a consecutive fetch grabbing the UV index for the day
-        let UVindexUrl = `https://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${openweatherAPIkey}`;        
-        fetch(UVindexUrl)
-            .then((response) => response.json())
-            .then((UVDataObj) => {
-                let UVI = UVDataObj.value;
-                let indexValue = document.createElement("span");
-                indexValue.setAttribute('id', 'index-value');
-                indexValue.classList = 'bg-gray-400 rounded p-1';
-                if (UVI <= 5) { // 0 to 5 is yellow
-                    indexValue.classList.add('bg-yellow-400');
-                } else if (UVI <= 7) { // 6-7 is orange
-                    indexValue.classList.add('bg-orange-400');
-                } else if (UVI <= 10.5) { // 8-10 red
-                    indexValue.classList.add('bg-red-400');
-                } else if (UVI > 10.5){ // 11+ is extreme purple
-                    indexValue.classList.add('bg-purple-400');
-                }
-                
-                indexValue.innerHTML = `${UVI}`;
-                if (indexEl.childElementCount <= 1) {
-                    indexEl.appendChild(indexValue);
-                } else if (indexEl.children.length >= 2) {
-                    indexEl.removeChild(indexEl.children[1]);
-                    indexEl.appendChild(indexValue);
-                }
-            })
-    
+        searchObject.lat = lat;
+        searchObject.lon = lon;
+        console.log(searchObject);
+        UVcolorizer(searchObject);
         // gather the forecast asynchronously to the other weather data
         let forecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${openweatherAPIkey}&units=imperial&exclude={current,minutely,hourly,alerts}`;
         fetch(forecastUrl)
             .then(response => response.json())
             .then(forecastData => {
                 forecastList.innerHTML = '';
-                for (let i = 2; i <7; i++) {
+                for (let i = 1; i <6; i++) {
                     // create the article element holding 1 day's forecast
                     let forecastArticle = document.createElement("article");
-                    forecastArticle.classList = 'm-1 p-1 col-span-1 flex flex-col lg:flex-col justify-center bg-purple-600 rounded ';
+                    forecastArticle.classList = 'm-1 p-1 col-span-1 flex flex-col justify-center bg-purple-600 rounded ';
                     forecastArticle.setAttribute('src', `forecast-article-${i}`);
                     // grab value for the date and run it thru the stringer
                     let fDataTime = forecastData.daily[`${i}`].dt;
@@ -192,14 +169,43 @@ function myFunction(city) {
                         forecastList.appendChild(forecastArticle);
                     }
                 }
-                // lastly, save the search term
-                searchSave(city)
             })
-            
-        
         })
         
 }
 
-searchLoad();
-searchRender();
+// pass to a consecutive fetch grabbing the UV index for the day
+const UVcolorizer = (object) => {
+    let lat = object.lat;
+    let lon = object.lon;
+    let UVindexUrl = `https://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${openweatherAPIkey}`;        
+    fetch(UVindexUrl)
+        .then((response) => response.json())
+        .then((UVDataObj) => {
+            let UVI = UVDataObj.value;
+            let indexValue = document.createElement("span");
+            indexValue.setAttribute('id', 'index-value');
+            indexValue.classList = 'bg-gray-400 rounded p-1';
+            if (UVI <= 5) { // 0 to 5 is yellow
+                indexValue.classList.add('bg-yellow-400');
+            } else if (UVI <= 7) { // 6-7 is orange
+                indexValue.classList.add('bg-orange-400');
+            } else if (UVI <= 10.5) { // 8-10 red
+                indexValue.classList.add('bg-red-400');
+            } else if (UVI > 10.5){ // 11+ is extreme purple
+                indexValue.classList.add('bg-purple-400');
+            }
+            
+            indexValue.innerHTML = `${UVI}`;
+            if (indexEl.childElementCount <= 1) {
+                indexEl.appendChild(indexValue);
+            } else if (indexEl.children.length >= 2) {
+                indexEl.removeChild(indexEl.children[1]);
+                indexEl.appendChild(indexValue);
+            }
+        })
+        .catch((error) => console.log(error))
+}
+
+
+renderBtns(searchHistory);
