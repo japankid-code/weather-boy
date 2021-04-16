@@ -12,7 +12,7 @@ in case you were wondering, site [deployed here](https://japankid-code.github.io
 
 ### preview
 
-![site appearance](preview-wk.png)
+![site appearance](preview2-wk.png)
 
 ### mockup
 
