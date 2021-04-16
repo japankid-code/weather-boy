@@ -1,4 +1,4 @@
-# Weather Boy
+# Weather Kid
 
 javascript server side API project.
 
@@ -17,12 +17,3 @@ in case you were wondering, site [deployed here](https://japankid-code.github.io
 ### mockup
 
 ![gif showing site functionality](weather-app-demo.png)
-
-## links
-
-in case you were wondering, site [deployed here](https://japankid-code.github.io/weather-kid), github [repo here](https://github.com/japankid-code/weather-kid).
-
-### preview
-
-![site appearance](preview-wb.png)
-
