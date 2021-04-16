@@ -1,5 +1,5 @@
 * {
-    font-family: 'Roboto Mono', sans-serif;
+    font-family: 'Roboto Mono', 'sans-serif';
     --fontLight: #e0e0e0;
     --fontDark: #1a1a1a;
     --bgDark: #2a2a2a;
@@ -44,9 +44,4 @@
     position: sticky;
     width: 100%;
     height: 3rem;
-}
-
-#forecast-article,
-#old-search {
-    display: none;
 }
