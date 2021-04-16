@@ -122,56 +122,63 @@ function myFunction(city) {
         console.log(searchObject);
         UVcolorizer(searchObject);
         // gather the forecast asynchronously to the other weather data
-        let forecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${openweatherAPIkey}&units=imperial&exclude={current,minutely,hourly,alerts}`;
-        fetch(forecastUrl)
-            .then(response => response.json())
-            .then(forecastData => {
-                forecastList.innerHTML = '';
-                for (let i = 1; i <6; i++) {
-                    // create the article element holding 1 day's forecast
-                    let forecastArticle = document.createElement("article");
-                    forecastArticle.classList = 'm-1 p-1 col-span-1 flex flex-col justify-center bg-purple-600 rounded ';
-                    forecastArticle.setAttribute('src', `forecast-article-${i}`);
-                    // grab value for the date and run it thru the stringer
-                    let fDataTime = forecastData.daily[`${i}`].dt;
-                    let now = new Date(fDataTime * 1000);
-                    let fString = dateStringer(now);
-                    let dateChild = document.createElement(`span`);
-                    dateChild.classList = 'block';
-                    dateChild.innerHTML = `${fString}`;
-                    forecastArticle.appendChild(dateChild);
-                    // grab the icon code and append it using the APIs icon URL
-                    let fIcon = forecastData.daily[`${i}`].weather[0].icon;
-                    let iconUrl = `http://openweathermap.org/img/w/${fIcon}.png`;
-
-                    let iconChild = document.createElement("img");
-                    iconChild.classList = '';
-                    iconChild.src = iconUrl;
-                    forecastArticle.appendChild(iconChild);
-                    // add the temp, wind, humidity in using innerHTML to add  elements
-                    let fTemp = forecastData.daily[`${i}`].temp.day.toString().slice(0, 2);
-                    let fWind = forecastData.daily[`${i}`].wind_speed.toString().slice(0, 2);
-                    let fHums = forecastData.daily[`${i}`].humidity.toString();
-                    iconChild.insertAdjacentHTML('afterend', 
-                        `<div class='flex justify-between text-xs'><p>h: </p><p>${fHums}%</p></div>`
-                    );
-                    iconChild.insertAdjacentHTML('afterend', 
-                        `<div class='flex justify-between text-xs'><p>w: </p><p>${fWind} MPH</p></div>`
-                    );
-                    iconChild.insertAdjacentHTML('afterend', 
-                        `<div class='flex justify-between text-xs'><p>t: </p><p>${fTemp}&deg;F</p></div>`
-                    );
-                    // add it all to the forecast-container
-                    if (forecastList.children.length < 5) {
-                        forecastList.appendChild(forecastArticle);
-                    } else if (forecastList.children.length > 5) {
-                        forecastList.innerHTML = '';
-                        forecastList.appendChild(forecastArticle);
-                    }
-                }
-            })
+        forecaster(searchObject);
         })
         
+}
+
+const forecaster = (object) => {
+    let lat = object.lat;
+    let lon = object.lon;
+    let date = object.date;
+    let forecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${openweatherAPIkey}&units=imperial&exclude={current,minutely,hourly,alerts}`;
+    fetch(forecastUrl)
+        .then(response => response.json())
+        .then(forecastData => {
+            forecastList.innerHTML = '';
+            for (let i = 1; i <6; i++) {
+                // create the article element holding 1 day's forecast
+                let forecastArticle = document.createElement("article");
+                forecastArticle.classList = 'm-1 p-1 col-span-1 flex flex-col justify-center bg-purple-600 rounded ';
+                forecastArticle.setAttribute('src', `forecast-article-${i}`);
+                // grab value for the date and run it thru the stringer
+                let fDataTime = forecastData.daily[`${i}`].dt;
+                let now = new Date(fDataTime * 1000);
+                let fString = dateStringer(now);
+                let dateChild = document.createElement(`span`);
+                dateChild.classList = 'block';
+                dateChild.innerHTML = `${fString}`;
+                forecastArticle.appendChild(dateChild);
+                // grab the icon code and append it using the APIs icon URL
+                let fIcon = forecastData.daily[`${i}`].weather[0].icon;
+                let iconUrl = `http://openweathermap.org/img/w/${fIcon}.png`;
+
+                let iconChild = document.createElement("img");
+                iconChild.classList = '';
+                iconChild.src = iconUrl;
+                forecastArticle.appendChild(iconChild);
+                // add the temp, wind, humidity in using innerHTML to add  elements
+                let fTemp = forecastData.daily[`${i}`].temp.day.toString().slice(0, 2);
+                let fWind = forecastData.daily[`${i}`].wind_speed.toString().slice(0, 2);
+                let fHums = forecastData.daily[`${i}`].humidity.toString();
+                iconChild.insertAdjacentHTML('afterend', 
+                    `<div class='flex justify-between text-xs'><p>h: </p><p>${fHums}%</p></div>`
+                );
+                iconChild.insertAdjacentHTML('afterend', 
+                    `<div class='flex justify-between text-xs'><p>w: </p><p>${fWind} MPH</p></div>`
+                );
+                iconChild.insertAdjacentHTML('afterend', 
+                    `<div class='flex justify-between text-xs'><p>t: </p><p>${fTemp}&deg;F</p></div>`
+                );
+                // add it all to the forecast-container
+                if (forecastList.children.length < 5) {
+                    forecastList.appendChild(forecastArticle);
+                } else if (forecastList.children.length > 5) {
+                    forecastList.innerHTML = '';
+                    forecastList.appendChild(forecastArticle);
+                }
+            }
+        })
 }
 
 // pass to a consecutive fetch grabbing the UV index for the day
