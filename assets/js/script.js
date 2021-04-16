@@ -31,10 +31,8 @@ const dateStringer = (date) => {
 const renderBtns = (array) => {
     searchHistList.innerHTML = '';
     array.forEach((search, index) => {
-        let searchItem = document.createElement("button")
-        searchItem.classList = "m-2 px-2 py-1 bg-gray-400 border-gray-900 border-2 rounded-lg w-full"
-        searchItem.setAttribute("id", `past-search${index}`)
-        searchItem.setAttribute("onclick", "myFunction()")
+        let searchItem = document.createElement("button");
+        searchItem.classList = "searchItem m-2 px-2 py-1 bg-gray-400 border-gray-900 border-2 rounded-lg w-full";
         searchItem.textContent = searchHistory[index];
         searchHistList.append(searchItem);
     })
@@ -48,17 +46,15 @@ const searchSave = (search) => {
     // update the input value from the DOM
     searchHistory.push(search);
     localStorage.setItem("searches", JSON.stringify(searchHistory))
-    renderBtns();
+    renderBtns(searchHistory);
 }
 
 function myFunction(city) {
     let searchObject = {};
-    city = document.getElementById('search-input').value;
     // make sure they type somethign in
     if (city === null || city === undefined || city === '') {
         return;
     }
-    
     fetch(// first openweather fetch for today's data.
     `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${openweatherAPIkey}&units=imperial`
     )
@@ -96,7 +92,6 @@ function myFunction(city) {
         let lon = todaysData.coord.lon;
         searchObject.lat = lat;
         searchObject.lon = lon;
-        console.log(searchObject);
         forecaster(searchObject);
         UVcolorizer(searchObject);
         })
@@ -201,3 +196,18 @@ const UVcolorizer = (object) => {
 
 
 renderBtns(searchHistory);
+
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('searchItem')) {
+        let city = e.target.textContent;
+        console.log(city)
+        myFunction(city);
+    } else if (e.target.id == 'search-button') {
+        let city = document.getElementById('search-input').value;
+        if (city == null || city == undefined || city == '') {
+            return;
+        }
+        searchSave(city);
+        myFunction(city);
+    }
+ });
