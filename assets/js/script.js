@@ -9,9 +9,9 @@ const forecastList = document.getElementById("forecast-container");
 const cityEl = document.getElementById("city-name");
 const dateEl = document.getElementById("current-date");
 const iconEl = document.getElementById("weather-icon");
-const tempEl = document.getElementById("temp-now");
-const windEl = document.getElementById("wind-now");
-const humidityEl = document.getElementById("humidity-now");
+const tempEl = document.getElementById("t");
+const windEl = document.getElementById("w");
+const humidityEl = document.getElementById("h");
 const indexEl = document.getElementById("UV-index");
 
 const searchButton = document.getElementById("search-button");
@@ -63,66 +63,42 @@ function myFunction(city) {
     `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${openweatherAPIkey}&units=imperial`
     )
     .then((response) => response.json())
-    .then((todayDataObj) => {
+    .then((todaysData) => {
         // values get overwritten for city, date and icon
         // get the city name
-        let cityName = todayDataObj.name;
+        let cityName = todaysData.name;
         cityEl.innerHTML = `${cityName} | `;
         searchObject.name = cityName;
         // use the date to pull out year, month and day
-        let dataTime = todayDataObj.dt;
+        let dataTime = todaysData.dt;
         let now = new Date(dataTime * 1000);
         let dateString = dateStringer(now);
         dateEl.innerHTML = `${dateString} | `;
         searchObject.date = dateString;
         // get the icon code to pass in to the icon img src
-        let todayIconCode = todayDataObj.weather[0].icon;
+        let todayIconCode = todaysData.weather[0].icon;
         let iconUrl = `http://openweathermap.org/img/w/${todayIconCode}.png`;
         iconEl.innerHTML = `<img src='${iconUrl}' class="inline"/>`;
 
         // values get appended to the divs for wind, temp and hums.
         // put the temp inside a new span and append it to today's weather
-        let todayTemp = todayDataObj.main.temp;
-        let tempValue = document.createElement("span");
-        tempValue.innerHTML = `${todayTemp} &deg;F`;
-        if (tempEl.children.length <= 1) {
-            tempEl.appendChild(tempValue);
-        } else if (tempEl.children.length >= 2) {
-            // checks if there is a value displayed and removes it if there is
-            tempEl.removeChild(tempEl.children[1]);
-            tempEl.appendChild(tempValue);
-        }
+        let todayTemp = todaysData.main.temp;
+        tempEl.innerHTML = `${todayTemp} &deg;F`;
         // put the wind inside a new span and append it to today's weather
-        let todayWind = todayDataObj.wind.speed;
-        let windValue = document.createElement("span");
-        windValue.innerHTML = `${todayWind} MPH`;
-        if (windEl.children.length <= 1) {
-            windEl.appendChild(windValue);
-        } else if (windEl.children.length >= 2) {
-            windEl.removeChild(windEl.children[1]);
-            windEl.appendChild(windValue);
-        }
+        let todayWind = todaysData.wind.speed;
+        windEl.innerHTML = `${todayWind} MPH`
         // put the humidity inside a new span and append it to today's weather
-        let todayHumidity = todayDataObj.main.humidity;
-        let humidityValue = document.createElement("span");
-        humidityValue.innerHTML = `${todayHumidity} %`;
-        if (humidityEl.children.length <= 1) {
-            humidityEl.appendChild(humidityValue);
-        } else if (humidityEl.children.length >= 2) {
-            humidityEl.removeChild(humidityEl.children[1]);
-            humidityEl.appendChild(humidityValue);
-        }
-
+        let todayHumidity = todaysData.main.humidity;
+        humidityEl.innerHTML = `${todayHumidity}%`;
         // take care of UV index with another API call
         // grab the latitude and longitude from today's data,
-        let lat = todayDataObj.coord.lat;
-        let lon = todayDataObj.coord.lon;
+        let lat = todaysData.coord.lat;
+        let lon = todaysData.coord.lon;
         searchObject.lat = lat;
         searchObject.lon = lon;
         console.log(searchObject);
-        UVcolorizer(searchObject);
-        // gather the forecast asynchronously to the other weather data
         forecaster(searchObject);
+        UVcolorizer(searchObject);
         })
         
 }
@@ -159,16 +135,25 @@ const forecaster = (object) => {
                 forecastArticle.appendChild(iconChild);
                 // add the temp, wind, humidity in using innerHTML to add  elements
                 let fTemp = forecastData.daily[`${i}`].temp.day.toString().slice(0, 2);
-                let fWind = forecastData.daily[`${i}`].wind_speed.toString().slice(0, 2);
+                let fWind = Math.round(forecastData.daily[`${i}`].wind_speed);
                 let fHums = forecastData.daily[`${i}`].humidity.toString();
                 iconChild.insertAdjacentHTML('afterend', 
-                    `<div class='flex justify-between text-xs'><p>h: </p><p>${fHums}%</p></div>`
+                    `<div class='flex justify-between text-xs'>
+                        <p>h: </p>
+                        <p>${fHums}%</p>
+                    </div>`
                 );
                 iconChild.insertAdjacentHTML('afterend', 
-                    `<div class='flex justify-between text-xs'><p>w: </p><p>${fWind} MPH</p></div>`
+                    `<div class='flex justify-between text-xs'>
+                        <p>w: </p>
+                        <p>${fWind} MPH</p>
+                    </div>`
                 );
                 iconChild.insertAdjacentHTML('afterend', 
-                    `<div class='flex justify-between text-xs'><p>t: </p><p>${fTemp}&deg;F</p></div>`
+                    `<div class='flex justify-between text-xs'>
+                        <p>t: </p>
+                        <p>${fTemp}&deg;F</p>
+                    </div>`
                 );
                 // add it all to the forecast-container
                 if (forecastList.children.length < 5) {
